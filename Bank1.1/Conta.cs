@@ -4,14 +4,13 @@ namespace Bank1._1
 {
     public class Conta
     {
-        public Conta()
-        {
-        }
+        
 
         public int numero { get; set; }
-        public double saldo { get; private set; }
+        public double saldo { get; protected set; }
         public Cliente titular { get; set; }
 
+        
         public double setSaldo(double valor)
         {
             return this.saldo = valor;
@@ -29,7 +28,7 @@ namespace Bank1._1
             }
         }
 
-        public bool Sacar(double valor)
+        public virtual bool Sacar(double valor)
         {
             if(this.saldo >= valor)
             {
@@ -40,6 +39,24 @@ namespace Bank1._1
             {
                 return false;
             }
+        }
+
+        public bool Transferir(Conta partida, Conta destino, double valor)
+        {
+            if(valor <= this.saldo)
+            {
+                if (partida.Sacar(valor))
+                {
+                    destino.Depositar(valor);
+                }
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
+           
         }
     }
 }
