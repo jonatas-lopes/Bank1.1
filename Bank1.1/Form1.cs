@@ -12,8 +12,8 @@ namespace Bank1._1
 {
     public partial class Form1 : Form
     {
-        private Conta c1;
-        private Conta c2;
+        private Conta[] contas;
+        
         public Form1()
         {
             InitializeComponent();
@@ -21,126 +21,81 @@ namespace Bank1._1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Conta c1 = new Conta();
-            Conta c2 = new Conta();
-            
-           
-
-            c2.numero = 2;
-            c1.numero = 1;
-            this.c1 = new Conta();
-            this.c2 = new Conta();
-            Cliente cli1 = new Cliente("João");
-            Cliente cli2 = new Cliente("Maria");
-            c2.titular = cli2;
-            c1.titular = cli1;
             
 
-            campoTitular.Text = c1.titular.nome;
-            campoNumero.Text = Convert.ToString(c1.numero);
-            campoSaldo.Text = Convert.ToString(c1.saldo);
+            contas = new Conta[2];
 
-            campoTitular2.Text = c2.titular.nome;
-            campoNumero2.Text = Convert.ToString(c2.numero);
-            campoSaldo2.Text = Convert.ToString(c2.saldo);
+            
+
+            this.contas[0] = new Conta();
+            this.contas[0].titular = new Cliente("João");
+            this.contas[0].numero = 1;
+
+            this.contas[1] = new Contapoupanca();
+            this.contas[1].titular = new Cliente("Maria");
+            this.contas[1].numero = 2;
+
+
+            foreach (Conta c in contas)
+            {
+                comboContas.Items.Add(c.titular.nome);
+            }
+
+
+            foreach (Conta c in contas)
+            {
+                comboTransfere.Items.Add(c.titular.nome);
+            }
+
+
         }
 
         private void buttonDepositar_Click(object sender, EventArgs e)
         {
-            string valorDigitado = campoValor.Text;
-            double valorOperacao = Convert.ToDouble(valorDigitado);
-            this.c1.Depositar(valorOperacao);
-            campoSaldo.Text = Convert.ToString(this.c1.saldo);
-            MessageBox.Show("Deposito de " + valorOperacao + " efetuado com sucesso");
+            int indice = Convert.ToInt32(comboContas.SelectedIndex);
+            Conta selecionada = this.contas[indice];
+
+            double valor = Convert.ToDouble(campoValor.Text);
+            selecionada.Depositar(valor);
+            campoSaldo.Text = Convert.ToString(selecionada.saldo);            
         }
 
         private void buttonSacar_Click(object sender, EventArgs e)
         {
-            string valorDigitado = campoValor.Text;
-            double valorOperacao = Convert.ToDouble(valorDigitado);
-            bool verificar = this.c1.Sacar(valorOperacao);
+            int indice = Convert.ToInt32(comboContas.SelectedIndex);
+            Conta selecionada = this.contas[indice];
 
-            if(verificar)
-            {
-                campoSaldo.Text = Convert.ToString(this.c1.saldo);
-
-                MessageBox.Show("Saque Efetuado com sucesso");
-                
-            }
-            else
-            {
-                MessageBox.Show("Saldo insuficiente");
-                
-            }
-            
-        }
-
-        private void buttonDepositar2_Click(object sender, EventArgs e)
-        {
-            string ValorDigitado = campoValor2.Text;
-            double valorOp = Convert.ToDouble(ValorDigitado);
-            this.c2.Depositar(valorOp);
-            campoSaldo2.Text = Convert.ToString(this.c2.saldo);
-            MessageBox.Show("Deposito de " + valorOp + " efetuado com sucesso");
-        }
-
-        private void buttonSacar2_Click(object sender, EventArgs e)
-        {
-            string valorDigitado = campoValor2.Text;
-            double valorOp = Convert.ToDouble(valorDigitado);
-            bool confere = this.c2.Sacar(valorOp);
-
-            if(confere)
-            {
-                campoSaldo2.Text = Convert.ToString(this.c2.saldo);
-                MessageBox.Show("Saque de valor " + valorOp + " Realizado com sucesso");
-            }
-            else
-            {
-                MessageBox.Show("Saldo insuficiente");
-
-            }
+            double valor = Convert.ToDouble(campoValor.Text);
+            selecionada.Sacar(valor);
+            campoSaldo.Text = Convert.ToString(selecionada.saldo);
 
         }
-
-        private void buttonTransferir_Click(object sender, EventArgs e)
-        {
-            string valor = campoValor2.Text;
-                             
-            double valorOp = Convert.ToDouble(valor);
-            bool confere = this.c1.Transferir(this.c2, this.c1, valorOp);
-            if(confere)
-            {
-                campoSaldo2.Text = Convert.ToString(this.c2.saldo);
-                campoSaldo.Text = Convert.ToString(this.c1.saldo);
-                MessageBox.Show("Tranferencia realizada no valor de " + valorOp);
-            }
-            else
-            {
-                MessageBox.Show("Saldo insuficiente");
-            }
 
             
-        }
+               
 
         private void buttonTranferir2_Click(object sender, EventArgs e)
         {
-            string valor = campoValor.Text;
             
-            double valorOp = Convert.ToDouble(valor);
-            bool confere = this.c1.Transferir(this.c1, this.c2, valorOp);
+            
 
-            if (confere)
-            {
-                campoSaldo.Text = Convert.ToString(this.c1.saldo);
-                campoSaldo2.Text = Convert.ToString(this.c2.saldo);
-                MessageBox.Show("Tranferencia realizada no valor de " + valorOp);
-            }
-            else
-            {
-                MessageBox.Show("Saldo insuficiente");
-            }
+        }
+
+        private void comboContas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+                       
+
+            int indice = comboContas.SelectedIndex;
+            Conta selecionada = this.contas[indice];
+            campoNumero.Text = Convert.ToString(selecionada.numero);
+            campoTitular.Text = selecionada.titular.nome;
+            campoSaldo.Text = Convert.ToString(selecionada.saldo);
+
             
+        }
+
+        private void comboTransfere_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
         }
     }
